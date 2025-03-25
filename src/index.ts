@@ -12,7 +12,7 @@ import obfuscate from './obfuscate';
 
 // Load token from .env
 const token = process.env.DISCORD_TOKEN;
-const MAX_SIZE = 40000; // 40kB max size
+const MAX_SIZE = 4000000; // 4mb max size
 
 logger.log('Bot is starting ...');
 
