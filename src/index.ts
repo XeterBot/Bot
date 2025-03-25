@@ -194,7 +194,6 @@ client.on('interactionCreate', async (interaction) => {
         });
         return;
     }
-    fileMessage.delete();
 
     await message.edit({
         embeds: [
