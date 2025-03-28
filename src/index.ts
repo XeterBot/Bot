@@ -52,7 +52,7 @@ client.on('interactionCreate', async (interaction) => {
         interaction.update({
             embeds: [
                 {
-                    title: 'Prometheus Obfuscator',
+                    title: 'Xeter Bot Obfuscator',
                     description: 'Something went wrong. Please try again.',
                     color: '#ff8800',
                 },
@@ -76,7 +76,7 @@ client.on('interactionCreate', async (interaction) => {
     await message.edit({
         embeds: [
             {
-                title: 'Prometheus Obfuscator',
+                title: 'Xeter Bot Obfuscator',
                 description: `🔄 Uploading your file ...\n🔄 Obfuscating your file using ${buttonInfo?.preset} Preset ...\n🔄 Downloading your file ...`,
                 color: '#ff8800',
             },
@@ -97,7 +97,7 @@ client.on('interactionCreate', async (interaction) => {
         message.edit({
             embeds: [
                 {
-                    title: 'Prometheus Obfuscator',
+                    title: 'Xeter Bot Obfuscator',
                     description: 'The max filesize for the obfuscator bot is 40KB.\nIf you want to obfuscate larger files, please use the standalone version.',
                     color: '#ff0000',
                 },
@@ -124,7 +124,7 @@ client.on('interactionCreate', async (interaction) => {
         message.edit({
             embeds: [
                 {
-                    title: 'Prometheus Obfuscator',
+                    title: 'Xeter Bot Obfuscator',
                     description: 'Upload failed! Please try again.',
                     color: '#ff0000',
                 },
@@ -138,7 +138,7 @@ client.on('interactionCreate', async (interaction) => {
     await message.edit({
         embeds: [
             {
-                title: 'Prometheus Obfuscator',
+                title: 'Xeter Bot Obfuscator',
                 description: `✅ Uploading your file ...\n🔄 Obfuscating your file using ${buttonInfo?.preset} Preset ...\n🔄 Downloading your file ...`,
                 color: '#ff8800',
             },
@@ -153,7 +153,7 @@ client.on('interactionCreate', async (interaction) => {
         message.edit({
             embeds: [
                 {
-                    title: 'Prometheus Obfuscator',
+                    title: 'Xeter Bot Obfuscator',
                     description: `Obfuscation failed:\n${e}`,
                     color: '#ff0000',
                 },
@@ -167,7 +167,7 @@ client.on('interactionCreate', async (interaction) => {
     await message.edit({
         embeds: [
             {
-                title: 'Prometheus Obfuscator',
+                title: 'Xeter Bot Obfuscator',
                 description: `✅ Uploading your file ...\n✅ Obfuscating your file using ${buttonInfo?.preset} Preset ...\n🔄 Downloading your file ...`,
                 color: '#ff8800',
             },
@@ -185,7 +185,7 @@ client.on('interactionCreate', async (interaction) => {
         message.edit({
             embeds: [
                 {
-                    title: 'Prometheus Obfuscator',
+                    title: 'Xeter Bot Obfuscator',
                     description: 'Download failed! Please try again.',
                     color: '#ff0000',
                 },
@@ -198,7 +198,7 @@ client.on('interactionCreate', async (interaction) => {
     await message.edit({
         embeds: [
             {
-                title: 'Prometheus Obfuscator',
+                title: 'Xeter Bot Obfuscator',
                 description: `✅ Uploading your file ...\n✅ Obfuscating your file using ${buttonInfo?.preset} Preset ...\n✅ Downloading your file ...\n\n🔗 [Download](${url})`,
                 color: '#00ff00',
             },
@@ -242,7 +242,7 @@ client.on('messageCreate', async (message) => {
 
         const msg = await message.reply({
             embeds: [{
-                title: 'Prometheus Obfuscator',
+                title: 'Xeter Bot Obfuscator',
                 color: '#ff8800',
                 description: content,
             }],
