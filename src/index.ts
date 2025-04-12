@@ -73,10 +73,23 @@ client.on('messageCreate', async (message) => {
             return;
         }
 
-		const randomName = `${uuid()}.lua`;
-		const attachment = new MessageAttachment(outFile.name, randomName);
+        // Đọc nội dung của file đã obfuscated
+        const obfuscatedContent = fs.readFileSync(outFile.name, 'utf-8');
+
+        // Thêm dòng "Obfuscated By" vào đầu nội dung
+        const newContent = `-- Obfuscated By Xeter Hub [ https://discord.com/invite/hcJ8PHtkfy ]\n\n${obfuscatedContent}`;
+
+        // Tạo file tạm mới với nội dung đã chỉnh sửa
+        const finalFile = tmp.fileSync({ postfix: '.lua' });
+        fs.writeFileSync(finalFile.name, newContent);
+
+        // Tạo và gửi file mới
+        const randomName = `${uuid()}.lua`;
+        const attachment = new MessageAttachment(finalFile.name, randomName);
         await message.reply({ files: [attachment] });
 
+        // Dọn dẹp
+        finalFile.removeCallback();
         outFile.removeCallback();
         tmpFile.removeCallback();
     } catch (error) {
