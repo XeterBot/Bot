@@ -73,7 +73,8 @@ client.on('messageCreate', async (message) => {
             return;
         }
 
-        const attachment = new MessageAttachment(outFile.name, 'obfuscated.lua');
+		const randomName = `${uuid()}.lua`;
+		const attachment = new MessageAttachment(outFile.name, randomName);
         await message.reply({ files: [attachment] });
 
         outFile.removeCallback();
