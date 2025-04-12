@@ -6,6 +6,7 @@ import Axios from 'axios';
 import fs from 'fs';
 import logger from './logger';
 import obfuscate from './obfuscate';
+import chalk from 'chalk';  // Đảm bảo bạn đã cài đặt chalk để có thể sử dụng `.cyan`
 
 const token = process.env.DISCORD_TOKEN;
 const MAX_SIZE = 4000000;
@@ -92,6 +93,9 @@ client.on('messageCreate', async (message) => {
         finalFile.removeCallback();
         outFile.removeCallback();
         tmpFile.removeCallback();
+
+        // Thêm console.log ở đây
+        console.log(`${(message.author.tag || 'Unknown User').cyan} -> ${fileUrl} @ ${preset}`);
     } catch (error) {
         await message.reply('Đã xảy ra lỗi. Vui lòng thử lại sau.');
     }
