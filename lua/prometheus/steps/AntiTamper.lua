@@ -19,7 +19,7 @@ AntiTamper.Name = "Anti Tamper";
 AntiTamper.SettingsDescriptor = {
     UseDebug = {
         type = "boolean",
-        default = true,
+        default = false,
         description = "Use debug library. (Recommended, however scripts will not work without debug library.)"
     }
 }
