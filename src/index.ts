@@ -6,7 +6,7 @@ import Axios from 'axios';
 import fs from 'fs';
 import logger from './logger';
 import obfuscate from './obfuscate';
-import chalk from 'chalk';  // Đảm bảo bạn đã cài đặt chalk để có thể sử dụng `.cyan`
+import chalk from 'chalk'; // cần cài: npm i chalk
 
 const token = process.env.DISCORD_TOKEN;
 const MAX_SIZE = 4000000;
@@ -44,6 +44,12 @@ client.on('messageCreate', async (message) => {
 
     if (!preset) return;
 
+    // Gửi tín hiệu "đang nhập..." liên tục
+    const typingInterval = setInterval(() => {
+        message.channel.sendTyping().catch(() => {});
+    }, 8000);
+    message.channel.sendTyping().catch(() => {});
+
     try {
         const response = await Axios({
             method: 'GET',
@@ -52,6 +58,7 @@ client.on('messageCreate', async (message) => {
         });
 
         if (response.headers['content-length'] && Number.parseInt(response.headers['content-length'], 10) > MAX_SIZE) {
+            clearInterval(typingInterval);
             await message.reply('File quá lớn! Vui lòng sử dụng file nhỏ hơn 4MB.');
             return;
         }
@@ -69,34 +76,30 @@ client.on('messageCreate', async (message) => {
         try {
             outFile = await obfuscate(tmpFile.name, preset);
         } catch (e) {
+            clearInterval(typingInterval);
             await message.reply(`Mã hoá thất bại:\n${e}`);
             tmpFile.removeCallback();
             return;
         }
 
-        // Đọc nội dung của file đã obfuscated
         const obfuscatedContent = fs.readFileSync(outFile.name, 'utf-8');
-
-        // Thêm dòng "Obfuscated By" vào đầu nội dung
         const newContent = `-- Obfuscated By Xeter Hub [ https://discord.com/invite/hcJ8PHtkfy ]\n\n${obfuscatedContent}`;
 
-        // Tạo file tạm mới với nội dung đã chỉnh sửa
         const finalFile = tmp.fileSync({ postfix: '.lua' });
         fs.writeFileSync(finalFile.name, newContent);
 
-        // Tạo và gửi file mới
         const randomName = `${uuid()}.lua`;
         const attachment = new MessageAttachment(finalFile.name, randomName);
         await message.reply({ files: [attachment] });
 
-        // Dọn dẹp
         finalFile.removeCallback();
         outFile.removeCallback();
         tmpFile.removeCallback();
 
-        // Thêm console.log ở đây
         console.log(`${(message.author.tag || 'Unknown User').cyan} -> ${fileUrl} @ ${preset}`);
     } catch (error) {
         await message.reply('Đã xảy ra lỗi. Vui lòng thử lại sau.');
+    } finally {
+        clearInterval(typingInterval); // Dừng typing khi xong
     }
 });
