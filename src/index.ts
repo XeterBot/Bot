@@ -34,43 +34,52 @@ client.on('messageCreate', async (message) => {
     const content = message.content.toLowerCase();
     const fileUrl = message.attachments.first()?.url;
 
-    if (!fileUrl) return;
-
     let preset: string | null = null;
-
     if (content.includes('!weak')) preset = 'Weak';
     else if (content.includes('!medium')) preset = 'Medium';
     else if (content.includes('!strong')) preset = 'Strong';
-
     if (!preset) return;
 
-    // Gửi tín hiệu "đang nhập..." liên tục
     const typingInterval = setInterval(() => {
         message.channel.sendTyping().catch(() => {});
     }, 8000);
     message.channel.sendTyping().catch(() => {});
 
     try {
-        const response = await Axios({
-            method: 'GET',
-            url: fileUrl,
-            responseType: 'stream',
-        });
+        let code = '';
+        let tmpFile;
 
-        if (response.headers['content-length'] && Number.parseInt(response.headers['content-length'], 10) > MAX_SIZE) {
-            clearInterval(typingInterval);
-            await message.reply('File quá lớn! Vui lòng sử dụng file nhỏ hơn 4MB.');
-            return;
+        if (fileUrl) {
+            const response = await Axios({
+                method: 'GET',
+                url: fileUrl,
+                responseType: 'stream',
+            });
+
+            if (response.headers['content-length'] && Number.parseInt(response.headers['content-length'], 10) > MAX_SIZE) {
+                clearInterval(typingInterval);
+                await message.reply('File quá lớn! Vui lòng sử dụng file nhỏ hơn 4MB.');
+                return;
+            }
+
+            tmpFile = tmp.fileSync({ postfix: '.lua' });
+            const writeStream = fs.createWriteStream(tmpFile.name);
+            response.data.pipe(writeStream);
+
+            await new Promise<void>((resolve, reject) => {
+                response.data.on('end', resolve);
+                response.data.on('error', reject);
+            });
+        } else {
+            const match = message.content.match(/```(?:lua)?\n?([\s\S]*?)```/);
+            if (!match || !match[1]) {
+                clearInterval(typingInterval);
+                return;
+            }
+            code = match[1].trim();
+            tmpFile = tmp.fileSync({ postfix: '.lua' });
+            fs.writeFileSync(tmpFile.name, code, 'utf-8');
         }
-
-        const tmpFile = tmp.fileSync({ postfix: '.lua' });
-        const writeStream = fs.createWriteStream(tmpFile.name);
-        response.data.pipe(writeStream);
-
-        await new Promise<void>((resolve, reject) => {
-            response.data.on('end', resolve);
-            response.data.on('error', reject);
-        });
 
         let outFile;
         try {
@@ -96,10 +105,10 @@ client.on('messageCreate', async (message) => {
         outFile.removeCallback();
         tmpFile.removeCallback();
 
-        console.log(`${(message.author.tag || 'Unknown User').cyan} -> ${fileUrl} @ ${preset}`);
+        console.log(`${(message.author.tag || 'Unknown User').cyan} -> ${fileUrl || 'Code block'} @ ${preset}`);
     } catch (error) {
         await message.reply('Đã xảy ra lỗi. Vui lòng thử lại sau.');
     } finally {
-        clearInterval(typingInterval); // Dừng typing khi xong
+        clearInterval(typingInterval);
     }
 });
